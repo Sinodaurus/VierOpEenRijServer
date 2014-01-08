@@ -28,7 +28,9 @@ public class ClientHandler extends Thread {
 			handlers.add(this);
 			while (true) {
 				int line = input.nextInt();
-				arrangeBoard(player*10 + line);
+				int turn = 0;
+				if(line % 10 == 1) {turn = 0;} else {turn = 1;}
+				arrangeBoard((player*100) + (line) + turn);
 				System.out.println("incoming message: " + line);
 			}
 		} finally {

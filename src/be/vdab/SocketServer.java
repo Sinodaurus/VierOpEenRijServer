@@ -3,6 +3,7 @@ package be.vdab;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class SocketServer {
 	public static void main(String[] args) throws IOException{
@@ -23,7 +24,8 @@ public class SocketServer {
 					numberOfPlayers++;
 				} else {
 					System.out.println("Maximum players reached !");
-					break;
+					Scanner scanner = new Scanner(System.in);
+					scanner.next();
 				}
 			}
 			
