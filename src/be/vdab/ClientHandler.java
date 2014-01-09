@@ -13,24 +13,33 @@ public class ClientHandler extends Thread {
 	protected Socket socket;
 	protected Scanner input;
 	protected PrintWriter output;
+	protected boolean firstPlayer;
 
-	public ClientHandler(Socket socket, int player) throws IOException {
+	public ClientHandler(Socket socket, int player, boolean firstPlayer) throws IOException {
 		this.player = player;
 		this.socket = socket;
+		this.firstPlayer = firstPlayer;
 		input = new Scanner(socket.getInputStream());
 		output = new PrintWriter(socket.getOutputStream());
 	}
-	
+
 	protected static List<ClientHandler> handlers = new ArrayList<>();
 
 	public void run() {
+		if (firstPlayer) {
+			
+			this.output.println(1);
+			this.output.flush();
+			firstPlayer = false;
+		} else {
+			this.output.println(0);
+			this.output.flush();
+		}
 		try {
 			handlers.add(this);
 			while (true) {
 				int line = input.nextInt();
-				int turn = 0;
-				if(line % 10 == 1) {turn = 0;} else {turn = 1;}
-				arrangeBoard((player*100) + (line) + turn);
+				arrangeBoard((player * 100) + (line));
 				System.out.println("incoming message: " + line);
 			}
 		} finally {
@@ -42,10 +51,10 @@ public class ClientHandler extends Thread {
 			}
 		}
 	}
-	
-	protected void arrangeBoard(int line){
+
+	protected void arrangeBoard(int line) {
 		synchronized (handlers) {
-			for(ClientHandler clientHandler : handlers){
+			for (ClientHandler clientHandler : handlers) {
 				synchronized (clientHandler.output) {
 					System.out.println("arrangeboard with: " + line);
 					clientHandler.output.println(line);
